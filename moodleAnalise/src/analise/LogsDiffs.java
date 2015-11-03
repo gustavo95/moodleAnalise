@@ -84,4 +84,20 @@ public class LogsDiffs {
 		return result;  
 
 	} 
+	
+	public ArrayList<String> getCommitFile(String file) throws IOException{
+		ArrayList<String> commits = new ArrayList<String>();
+		
+		String a = execCommand("git log --" + file);
+
+		Pattern pattern = Pattern.compile("(commit)\\s*(.*)");
+		Matcher matcher = pattern.matcher(a);
+		while (matcher.find()) {
+			if (matcher.group(2).length() == 40) {
+				commits.add(matcher.group(2));
+			}
+		}
+		
+		return commits;
+	}
 }
