@@ -20,11 +20,14 @@ public class Main {
 		ArrayList<String> bugs;
 		ArrayList<String> patch;
 		ArrayList<String> functions;
+		int count = 0;
 		String textData = "";
-		String diffIndex = "";
+		//String diffIndex = "";
 		String file = "";
+		String commit = "";
 		
-		Pattern pattern9 = Pattern.compile("(diff --git\\s*\\w\\/)(.*?)(?<=.*)index(.+?\\s)");
+		//Pattern pattern1 = Pattern.compile("(diff --git\\s*\\w\\/)(.*?)(?<=.*)index(.+?\\s)");
+		Pattern pattern2 = Pattern.compile("(php b/.*php)");
 		
 		for(String vLink : vulnerabilidades){
 			System.out.println("\nVulnerabilidade: " + vLink);
@@ -35,23 +38,27 @@ public class Main {
 				for(String pLink : patch){
 					System.out.println("Patch: " + pLink);
 					textData = cf.getFile(pLink);
-					Matcher matcher9 = pattern9.matcher(textData);
+					//Matcher matcher1 = pattern1.matcher(textData);
+					Matcher matcher2 = pattern2.matcher(textData);
 					
-					while (matcher9.find()) {
-						file = matcher9.group(2).replace(" ", "").split("b/")[0];
-						diffIndex = matcher9.group(3).replace(" ", "");
+					commit = pLink.split("h=")[1];
+					System.out.println("Commit: " + commit);
+					
+					while (matcher2.find()) {
+						file = matcher2.group().split(" ")[1];
+						count = file.length() - file.replace("/", "").length();
+						file = file.split("/")[count];
 						System.out.println("File: " + file);
-						System.out.println("Index: " + diffIndex);
 					}
 					
-					functions = cf.getClass(pLink);
+					functions = cf.getFunction(pLink);
 					for(String f : functions){
-						System.out.println("Class: " + f);
-						
+						System.out.println("Estrutura: " + f);
 					}
 				}
 			}
 		}
 	}
+	
 
 }

@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -11,7 +12,7 @@ import java.util.regex.Pattern;
 public class LogsDiffs {
 	public ArrayList<String> getLogs() throws IOException {
 		ArrayList<String> logs = new ArrayList<String>();
-		
+
 		Pattern pattern = Pattern.compile("(commit .*\nAuthor)");
 		String log = execCommand("git log");
 		//System.out.println(log);
@@ -24,20 +25,20 @@ public class LogsDiffs {
 		}
 		//System.out.println(logs.size());
 		//System.out.println(logs.get(0));
-		
+
 		return logs;
 	}
-	
+
 	public ArrayList<String> getDiffs() throws IOException{
 		ArrayList<String> logs = getLogs();
 		ArrayList<String> diffs = new ArrayList<String>();
-		
+
 		for(int i = 0; i < logs.size()-1; i++){
 			String diff = execCommand("git diff " + logs.get(i) + " " + logs.get(i+1));
 			System.out.println(i);
 			diffs.add(diff);
 		}
-		
+
 		return diffs;
 	}
 
@@ -85,19 +86,4 @@ public class LogsDiffs {
 
 	} 
 	
-	public ArrayList<String> getCommitFile(String file) throws IOException{
-		ArrayList<String> commits = new ArrayList<String>();
-		
-		String a = execCommand("git log --" + file);
-
-		Pattern pattern = Pattern.compile("(commit)\\s*(.*)");
-		Matcher matcher = pattern.matcher(a);
-		while (matcher.find()) {
-			if (matcher.group(2).length() == 40) {
-				commits.add(matcher.group(2));
-			}
-		}
-		
-		return commits;
-	}
 }
